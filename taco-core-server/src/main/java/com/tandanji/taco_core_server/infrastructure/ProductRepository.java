@@ -17,8 +17,8 @@ public class ProductRepository {
     }
 
     public int createProduct(Product product) {
-        String sql = "INSERT INTO PRODUCTS (title, imagePath, tradeMethod, price, priceOffer, description, location)"
-                + "VALUES (:title, :imagePath, :tradeMethod, :price, :priceOffer, :description, :location)";
+        final String sql = "INSERT INTO PRODUCTS (title, imagePath, tradeMethod, category, price, priceOffer, description, location)"
+                + "VALUES (:title, :imagePath, :tradeMethod, :category, :price, :priceOffer, :description, :location)";
 
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(product);
         return namedParameterJdbcTemplate.update(sql, parameterSource);

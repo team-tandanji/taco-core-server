@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 public class ProductController {
@@ -30,9 +31,11 @@ public class ProductController {
     }
 
     //TODO: make a get method
-    @GetMapping("/product/read")
-    public ResponseEntity<?> getProducts() {
-        return ResponseEntity.ok().body(null);
+    @GetMapping("/product/get")
+    public ResponseEntity<List<Product>> getProducts() {
+        List<Product> products = productsService.readProducts();
+
+        return ResponseEntity.ok().body(products);
     }
 
     //TODO: make a put method

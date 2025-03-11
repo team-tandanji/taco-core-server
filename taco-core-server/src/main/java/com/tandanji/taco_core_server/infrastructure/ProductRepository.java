@@ -2,9 +2,12 @@ package com.tandanji.taco_core_server.infrastructure;
 
 import com.tandanji.taco_core_server.domain.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class ProductRepository {
@@ -24,4 +27,9 @@ public class ProductRepository {
         return namedParameterJdbcTemplate.update(sql, parameterSource);
     }
 
+    public List<Product> readProducts() {
+        final String sql = "SELECT * FROM PRODUCTS";
+
+        return namedParameterJdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Product.class));
+    }
 }

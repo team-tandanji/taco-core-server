@@ -54,4 +54,10 @@ public class ProductRepository {
                 new Object[]{includeKeyword},
                 new BeanPropertyRowMapper<>(Product.class));
     }
+
+    public int deleteProductById(Long id) {
+        final String sql = "DELETE FROM PRODUCTS WHERE id = ?";
+
+        return jdbcTemplate.update(sql,id);
+    }
 }

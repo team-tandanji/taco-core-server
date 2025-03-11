@@ -14,8 +14,8 @@ import java.nio.file.Paths;
 @Service
 public class ProductsService {
 
-    private ProductRepository productRepository;
-    private ValidationService validationService;
+    private final ProductRepository productRepository;
+    private final ValidationService validationService;
 
     @Autowired
     ProductsService(ProductRepository productRepository, ValidationService validationService) {
@@ -32,7 +32,7 @@ public class ProductsService {
     }
 
     public static Product saveImage(Product product, MultipartFile image) throws IOException {
-        if (image != null) {
+        if (image != null && !image.isEmpty()) {
             String imageSaveDir = System.getProperty("user.dir") + "/image";
 
             String imageFileName = System.currentTimeMillis() + "-" + image.getOriginalFilename();

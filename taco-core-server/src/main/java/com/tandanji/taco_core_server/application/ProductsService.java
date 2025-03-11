@@ -50,8 +50,20 @@ public class ProductsService {
         return product;
     }
 
-    public List<Product> readProducts() {
-        List<Product> products = productRepository.readProducts();
+    public List<Product> getProducts() {
+        List<Product> products = productRepository.getProducts();
+
+        return products;
+    }
+
+    public Product getProductById(Long id) {
+        Product product = productRepository.getProductById(id);
+
+        return product;
+    }
+
+    public List<Product> getProductsByKeyword(String keyword) {
+        List<Product> products = productRepository.getProductsByKeyword(keyword);
 
         return products;
     }

@@ -32,8 +32,22 @@ public class ProductController {
 
 
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts() {
-        List<Product> products = productsService.readProducts();
+    public ResponseEntity<List<Product>> getAllProducts() {
+        List<Product> products = productsService.getProducts();
+
+        return ResponseEntity.ok().body(products);
+    }
+
+    @GetMapping("/products/search/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+        Product product = productsService.getProductById(id);
+
+        return ResponseEntity.ok().body(product);
+    }
+
+    @GetMapping("/products/search/")
+    public ResponseEntity<List<Product>> getProductsByKeyword(@RequestParam("keyword") String keyword) {
+        List<Product> products = productsService.getProductsByKeyword(keyword);
 
         return ResponseEntity.ok().body(products);
     }

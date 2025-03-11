@@ -4,6 +4,7 @@ import com.tandanji.taco_core_server.domain.Product;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,6 +19,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorMessage> handleContstraintViolatedException(ConstraintViolationException ex) {
         Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
+
         List<String> errors = constraintViolations.stream()
                 .map(constraintViolation -> extractField(constraintViolation.getPropertyPath()) + " : " +
                         constraintViolation.getMessage()
@@ -31,5 +33,13 @@ public class GlobalExceptionHandler {
         String[] splittedArray = path.toString().split("[.]");
         int lastIndex = splittedArray.length - 1;
         return splittedArray[lastIndex];
+    }
+
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    public ResponseEntity<String> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex) {
+
+        String errorMessage = "No data found for the given ID";
+
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 }

@@ -21,7 +21,7 @@ public class ProductController {
         this.productsService = productsService;
     }
 
-    @PostMapping(value = "/product/create")
+    @PostMapping("/products")
     public ResponseEntity<Void> createProduct(@RequestPart("product") Product product,
                                               @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
 
@@ -30,8 +30,8 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 
-    //TODO: make a get method
-    @GetMapping("/product/get")
+
+    @GetMapping("/products")
     public ResponseEntity<List<Product>> getProducts() {
         List<Product> products = productsService.readProducts();
 
@@ -39,13 +39,13 @@ public class ProductController {
     }
 
     //TODO: make a put method
-    @PutMapping("/product/update/{id}")
+    @PutMapping("/products/{id}")
     public ResponseEntity<?> updateProduct() {
         return ResponseEntity.ok().body(null);
     }
 
     //TODO: make a delete method
-    @DeleteMapping("/product/delete/{id}")
+    @DeleteMapping("/products/{id}")
     public ResponseEntity<?> deleteProduct() {
         return ResponseEntity.ok().body(null);
     }

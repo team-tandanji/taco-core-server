@@ -1,12 +1,16 @@
 package com.tandanji.taco_core_server.infrastructure;
 
 import com.tandanji.taco_core_server.domain.Product;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -59,5 +63,15 @@ public class ProductRepository {
         final String sql = "DELETE FROM PRODUCTS WHERE id = ?";
 
         return jdbcTemplate.update(sql,id);
+    }
+
+    public int updateProduct(Product product) {
+        final String sql = "UPDATE PRODUCTS SET title = :title, imagePath = :imagePath, tradeMethod = :tradeMethod, "
+                + "category = :category, price = :price, priceOffer = :priceOffer, description = :description, "
+                + "location = :location "
+                + "WHERE id = :id";
+
+        BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(product);
+        return namedParameterJdbcTemplate.update(sql, parameterSource);
     }
 }

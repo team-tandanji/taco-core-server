@@ -52,10 +52,12 @@ public class ProductController {
         return ResponseEntity.ok().body(products);
     }
 
-    //TODO: make a put method
     @PutMapping("/products/{id}")
-    public ResponseEntity<?> updateProduct() {
-        return ResponseEntity.ok().body(null);
+    public ResponseEntity<String> updateProduct(@PathVariable Long id, @RequestPart(value = "image", required = false) MultipartFile image,
+                                                @RequestPart("product") Product product) throws IOException{
+        productsService.updateProduct(id,image,product);
+
+        return ResponseEntity.status(HttpStatus.OK).body("Successfully Updated");
     }
 
     @DeleteMapping("/products/{id}")
@@ -63,7 +65,7 @@ public class ProductController {
         int isDeleted = productsService.deleteProductById(id);
 
         if(isDeleted == 1) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(id + "is deleted");
+            return ResponseEntity.status(HttpStatus.OK).body("ID: " + id + " is deleted");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product with ID : " + id + " does not exist");
         }

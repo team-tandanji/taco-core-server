@@ -44,7 +44,7 @@ public class ProductsService {
 
             product.setImagePath(imagePath.toString());
         } else {
-            product.setImagePath(null);
+            product.setImagePath(product.getImagePath());
         }
 
         return product;
@@ -72,5 +72,14 @@ public class ProductsService {
         int isDeleted = productRepository.deleteProductById(id);
 
         return isDeleted;
+    }
+
+    public void updateProduct(Long id, MultipartFile image, Product updateProduct) throws IOException {
+        updateProduct.setId(id);
+        updateProduct.setImagePath(productRepository.getProductById(id).getImagePath());
+
+        updateProduct = saveImage(updateProduct, image);
+
+        productRepository.updateProduct(updateProduct);
     }
 }

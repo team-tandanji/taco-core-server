@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-
-//TODO: Valid check
 @Getter
 @Setter
 public class Product {

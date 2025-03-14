@@ -10,6 +10,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -59,6 +61,7 @@ public class ProductRepository {
                 new BeanPropertyRowMapper<>(Product.class));
     }
 
+    @Transactional
     public int deleteProductById(Long id) {
         final String sql = "DELETE FROM PRODUCTS WHERE id = ?";
 

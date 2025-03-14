@@ -27,7 +27,7 @@ public class ProductController {
 
         productsService.createProduct(product, image);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 

@@ -2,8 +2,11 @@ package com.tandanji.taco_core_server.application;
 
 import com.tandanji.taco_core_server.domain.Product;
 import com.tandanji.taco_core_server.infrastructure.ProductRepository;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -24,6 +27,7 @@ public class ProductsService {
         this.validationService = validationService;
     }
 
+    @Transactional
     public void createProduct(Product product, MultipartFile image) throws IOException {
         validationService.checkValid(product);
 
@@ -32,9 +36,11 @@ public class ProductsService {
         productRepository.createProduct(product);
     }
 
-    public static Product saveImage(Product product, MultipartFile image) throws IOException {
+    public Product saveImage(Product product, MultipartFile image) throws IOException {
+        validationService.checkValid(product);
+
         if (image != null && !image.isEmpty()) {
-            String imageSaveDir = System.getProperty("user.dir") + "/image";
+            String imageSaveDir = Paths.get(System.getProperty("user.dir"),"image").toString();
 
             String imageFileName = System.currentTimeMillis() + "-" + image.getOriginalFilename();
             Path imagePath = Paths.get(imageSaveDir, imageFileName);
@@ -51,30 +57,29 @@ public class ProductsService {
     }
 
     public List<Product> getProducts() {
-        List<Product> products = productRepository.getProducts();
-
-        return products;
+        return productRepository.getProducts();
     }
 
     public Product getProductById(Long id) {
-        Product product = productRepository.getProductById(id);
-
-        return product;
+        return productRepository.getProductById(id);
     }
+
 
     public List<Product> getProductsByKeyword(String keyword) {
-        List<Product> products = productRepository.getProductsByKeyword(keyword);
+        validationService.checkValidBlank(keyword);
 
-        return products;
+        return productRepository.getProductsByKeyword(keyword.trim());
     }
 
+    @Transactional
     public int deleteProductById(Long id) {
-        int isDeleted = productRepository.deleteProductById(id);
-
-        return isDeleted;
+        return productRepository.deleteProductById(id);
     }
 
+    @Transactional
     public void updateProduct(Long id, MultipartFile image, Product updateProduct) throws IOException {
+        validationService.checkValid(updateProduct);
+
         updateProduct.setId(id);
         updateProduct.setImagePath(productRepository.getProductById(id).getImagePath());
 

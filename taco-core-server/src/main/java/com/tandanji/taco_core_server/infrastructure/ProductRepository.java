@@ -4,6 +4,7 @@ import com.tandanji.taco_core_server.domain.Product;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Slf4j
 @Repository
 public class ProductRepository {
 
@@ -29,6 +31,7 @@ public class ProductRepository {
     }
 
     public int createProduct(Product product) {
+        log.info("Inserting product into database: {}", product.getTitle());
         final String sql = "INSERT INTO PRODUCTS (title, imagePath, tradeMethod, category, price, priceOffer, description, location)"
                 + "VALUES (:title, :imagePath, :tradeMethod, :category, :price, :priceOffer, :description, :location)";
 
@@ -37,12 +40,14 @@ public class ProductRepository {
     }
 
     public List<Product> getProducts() {
+        log.info("Fetching products from database");
         final String sql = "SELECT * FROM PRODUCTS";
 
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Product.class));
     }
 
     public Product getProductById(Long id) {
+        log.info("Fetching product with ID {} from database",id);
         final String sql = "SELECT * FROM PRODUCTS WHERE id = ?";
 
         return jdbcTemplate.queryForObject(sql,
@@ -51,6 +56,7 @@ public class ProductRepository {
     }
 
     public List<Product> getProductsByKeyword(String keyword) {
+        log.info("Fetching products with keyword {} from database",keyword);
         final String sql = "SELECT * FROM PRODUCTS WHERE TITLE LIKE ?";
 
         String includeKeyword = "%" + keyword + "%";
@@ -63,12 +69,16 @@ public class ProductRepository {
 
     @Transactional
     public int deleteProductById(Long id) {
+        log.info("Deleting product with ID {} from database", id);
+
         final String sql = "DELETE FROM PRODUCTS WHERE id = ?";
 
         return jdbcTemplate.update(sql,id);
     }
 
     public int updateProduct(Product product) {
+        log.info("Updating product with ID {} in the database", product.getId());
+
         final String sql = "UPDATE PRODUCTS SET title = :title, imagePath = :imagePath, tradeMethod = :tradeMethod, "
                 + "category = :category, price = :price, priceOffer = :priceOffer, description = :description, "
                 + "location = :location "

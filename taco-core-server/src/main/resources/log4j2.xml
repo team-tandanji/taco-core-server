@@ -3,7 +3,6 @@
     <Properties>
         <Property name="LOG_PATH">logs</Property>
         <Property name="DEFAULT_PATTERN">[%X{requestId}] [%d{yyyy-MM-dd HH:mm:ss.SSS}]  %5p ${sys:PID} --- [%15.15t] %-40.40c{1.} : %m%n%xwEx</Property>
-<!--        <Property name="COLOR_PATTERN">[%clr{%d{yyyy-MM-dd HH:mm:ss.SSS}}{faint}] %clr{%5p} %clr{${sys:PID}}{magenta} %clr{-&#45;&#45;}{faint} %clr{[%15.15t]}{faint} %clr{%-40.40c}{cyan} %clr{:}{faint} %m%n%xwEx</Property>-->
         <Property name="TEST_PATTERN">%d %5p [%c] %m%n</Property>
         <Property name="COLOR_PATTERN">[%X{requestId}] [%clr{%d{yyyy-MM-dd HH:mm:ss.SSS}}{faint}] %clr{%5p} %clr{${sys:PID}}{magenta} %clr{---}{faint} %clr{[%15.15t]}{faint} %clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %m%n%xwEx</Property>
     </Properties>
@@ -13,9 +12,9 @@
             <PatternLayout pattern="${COLOR_PATTERN}"/>
         </Console>
 
-        <RollingFile name ="RollingFileAppender">
-            <FileName>${LOG_PATH}/log4j2.log</FileName>
-            <FilePattern>${LOG_PATH}/log4j2.%d{yyyy-MM-dd-hh-mm}.%i.log.gz</FilePattern>
+        <RollingFile name ="ApplicationLog">
+            <FileName>${LOG_PATH}/application.log</FileName>
+            <FilePattern>${LOG_PATH}/application-%d{yyyy-MM-dd}.%i.log.gz</FilePattern>
             <PatternLayout>
                 <Pattern>${DEFAULT_PATTERN}</Pattern>
             </PatternLayout>
@@ -23,6 +22,11 @@
                 <SizeBasedTriggeringPolicy size="100MB"/>
                 <TimeBasedTriggeringPolicy interval = "1" modulate = "true"/>
             </Policies>
+            <Filters>
+                <LoggerFilter onMatch="ACCEPT" onMismatch="DENY">
+                    <Logger name="com.tandanji.taco_core_server"/>
+                </LoggerFilter>
+            </Filters>
             <DefaultRolloverStrategy>
                 <Delete basePath="${LOG_PATH}" maxDepth="1">
                     <IfAccumulatedFileCount exceeds="3"/>
@@ -30,15 +34,32 @@
             </DefaultRolloverStrategy>
         </RollingFile>
 
+        <RollingFile name="AccessLog" fileName="${LOG_PATH}/access.log"
+                     filePattern="${LOG_PATH}/access-%d{yyyy-MM-dd}.%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingFile>
+
     </Appenders>
 
 
     <Loggers>
-        <!-- Root : 일반적인 로그 정책, 반드시 하나 정의해야함 -->
         <Root level="DEBUG" additivity="false">
             <AppenderRef ref="ConsoleAppender"/>
-            <AppenderRef ref="RollingFileAppender"/>
         </Root>
+
+        <Logger name="com.tandanji.taco_core_server" level="DEBUG" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="ApplicationLog"/>
+        </Logger>
+
+        <Logger name="ACCESS_LOG" level="info" additivity="false">
+            <AppenderRef ref="AccessLog"/>
+        </Logger>
 
         <!-- springframework logger -->
         <Logger name="org.springframework" level="INFO" additivity="false">

@@ -4,6 +4,7 @@ import com.tandanji.taco_core_server.domain.Product;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -27,6 +29,8 @@ public class GlobalExceptionHandler {
                 ).toList();
 
         ErrorMessage errorMessage = new ErrorMessage(errors);
+
+        log.warn(errorMessage.toString());
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
@@ -38,7 +42,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity<String> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex) {
-
+        log.warn("No Data found in database");
         String errorMessage = "No data found for the given ID";
 
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);

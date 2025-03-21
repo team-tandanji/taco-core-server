@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/taco-core-server.iml" filepath="$PROJECT_DIR$/.idea/taco-core-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/taco-core-server/taco-core-server.iml" filepath="$PROJECT_DIR$/taco-core-server/taco-core-server.iml" />
     </modules>
   </component>
 </project>

@@ -12,4 +12,11 @@ public class ErrorMessage {
     public List<String> getErrors() {
         return errors;
     }
+
+    @Override
+    public String toString() {
+        return "ErrorMessage{" +
+                "errors=" + errors +
+                '}';
+    }
 }

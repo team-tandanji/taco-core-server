@@ -34,16 +34,19 @@
     <select id="getProductsByConditions">
         SELECT * FROM PRODUCTS
         <where>
-            <if test="title != null">
+            <if test="title != null and !title.isEmpty()">
                 title like CONCAT('%', #{title}, '%')
             </if>
             <if test="price != 0">
                 AND price &lt;= #{price}
             </if>
-            <if test="location != null">
+            <if test="location != null and !location.isEmpty()">
                 AND location like CONCAT('%', #{location}, '%')
             </if>
         </where>
+        <if test="(title == null or title.isEmpty()) and (price == 0) and (location == null or location.isEmpty())">
+            WHERE 1 = 0
+        </if>
     </select>
 
 

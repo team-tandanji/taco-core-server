@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tandanji.taco_core_server.infrastructure.PostMapper">
+
+    <insert id="createProduct">
+        INSERT INTO PRODUCTS (title, imagePath, tradeMethod, category, price, priceOffer, description, location)
+        VALUES (#{title}, #{imagePath}, #{tradeMethod}, #{category}, #{price}, #{priceOffer}, #{description}, #{location})
+    </insert>
+
+    <select id="getProducts">
+        SELECT * FROM PRODUCTS
+    </select>
+
+    <select id="getProductById">
+        SELECT * FROM PRODUCTS WHERE id = #{id}
+    </select>
+
+    <select id="getProductsByKeyword">
+        SELECT * FROM PRODUCTS WHERE TITLE LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <delete id="deleteProductById">
+        DELETE FROM PRODUCTS WHERE id = #{id}
+    </delete>
+
+    <update id="updateProduct">
+        UPDATE PRODUCTS SET title = #{title}, imagePath = #{imagePath}, tradeMethod = #{tradeMethod},
+                 category = #{category}, price = #{price}, priceOffer = #{priceOffer}, description = #{description},
+                 location = #{location}
+                 WHERE id = #{id}
+    </update>
+
+    <select id="getProductsByConditions">
+        SELECT * FROM PRODUCTS
+        <where>
+            <if test="title != null">
+                title like CONCAT('%', #{title}, '%')
+            </if>
+            <if test="price != 0">
+                AND price &lt;= #{price}
+            </if>
+            <if test="location != null">
+                AND location like CONCAT('%', #{location}, '%')
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

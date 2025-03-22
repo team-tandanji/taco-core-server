@@ -1,11 +1,11 @@
 package com.tandanji.taco_core_server.application;
 
-import com.tandanji.taco_core_server.domain.Product;
 import com.tandanji.taco_core_server.infrastructure.ProductRepository;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+import com.tandanji.taco_core_server.domain.Product;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,7 +24,7 @@ public class ProductsService {
     private final ValidationService validationService;
 
     @Autowired
-    ProductsService(ProductRepository productRepository, ValidationService validationService) {
+    ProductsService(@Qualifier("myBatisRepository") ProductRepository productRepository, ValidationService validationService) {
         this.productRepository = productRepository;
         this.validationService = validationService;
     }
@@ -94,11 +94,30 @@ public class ProductsService {
         validationService.checkValid(updateProduct);
 
         updateProduct.setId(id);
-        updateProduct.setImagePath(productRepository.getProductById(id).getImagePath());
+
+        Product foundProduct = productRepository.getProductById(id);
+        if(foundProduct != null) {
+            updateProduct.setImagePath(foundProduct.getImagePath());
+        } else {
+            throw new EmptyResultDataAccessException(1);
+        }
 
         updateProduct = saveImage(updateProduct, image);
 
         productRepository.updateProduct(updateProduct);
+
         log.info("Successfully updated product with ID {}", id);
+    }
+
+    public List<Product> getProductsByConditions(String title, String price, String location) {
+        log.info("Fetching products with title {}, price {}, location {} from repository",title,price,location);
+
+        int priceValue = 0;
+
+        if(!price.isEmpty() && price.chars().allMatch(Character::isDigit)) {
+            priceValue = Integer.parseInt(price);
+        }
+
+        return productRepository.getProductsByConditions(title, priceValue, location);
     }
 }

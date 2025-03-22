@@ -1,10 +1,12 @@
 package com.tandanji.taco_core_server.infrastructure;
 
 import com.tandanji.taco_core_server.domain.Product;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-public interface ProductRepository {
+@Mapper
+public interface PostMapper {
     int createProduct(Product product);
     List<Product> getProducts();
     Product getProductById(Long id);

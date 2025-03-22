@@ -56,7 +56,7 @@ public class ProductController {
         return ResponseEntity.ok().body(product);
     }
 
-    @GetMapping("/products/search/")
+    @GetMapping("/products/search")
     public ResponseEntity<List<Product>> getProductsByKeyword(@RequestParam("keyword") String keyword) {
         log.info("Received request to fetch products with keyword {}",keyword);
 
@@ -90,6 +90,17 @@ public class ProductController {
             log.info("Failed to delete product with ID {}", id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product with ID : " + id + " does not exist");
         }
+    }
+
+    @GetMapping("/products/search/cond")
+    public ResponseEntity<List<Product>> getProductsByConditions(@RequestParam(value = "title", required = false) String title,
+                                                                @RequestParam(value = "price", required = false) String price,
+                                                                @RequestParam(value = "location", required = false) String location) {
+        log.info("User want to search with title : {}, price : {}, location : {}",title,price,location);
+
+        List<Product> products = productsService.getProductsByConditions(title, price, location);
+
+        return ResponseEntity.status(HttpStatus.OK).body(products);
     }
 
 }

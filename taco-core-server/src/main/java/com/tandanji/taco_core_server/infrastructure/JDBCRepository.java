@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -93,9 +94,30 @@ public class JDBCRepository implements ProductRepository {
         return namedParameterJdbcTemplate.update(sql, parameterSource);
     }
 
-    //TODO - implement jdbc sql
     @Override
     public List<Product> getProductsByConditions(String title, int price, String location) {
-        return List.of();
+        log.info("Fetching products with title {}, price {}, location {} from database",title,price,location);
+
+        StringBuilder sql = new StringBuilder("SELECT * FROM PRODUCTS WHERE 1 = 1");
+        List<Object> params = new ArrayList<>();
+
+        if(title != null && !title.isEmpty()) {
+            sql.append(" AND title like ?");
+            params.add("%" + title + "%");
+        }
+
+        if(price > 0) {
+            sql.append(" AND price <= ?");
+            params.add(price);
+        }
+
+        if(location != null && !location.isEmpty()) {
+            sql.append(" AND location like ?");
+            params.add("%" + location + "%");
+        }
+
+        log.info(sql.toString());
+
+        return jdbcTemplate.query(sql.toString(), params.toArray(), new BeanPropertyRowMapper<>(Product.class));
     }
 }

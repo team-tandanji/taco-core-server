@@ -18,7 +18,6 @@ import java.util.List;
 public class JDBCRepository implements ProductRepository {
 
     //TODO 0. change column(add, remove, change) property
-    //TODO 1. change jdbc to mybatis
     //TODO 2. spring data jpa
     //TODO 3. add redis
     //TODO 4. jwt
@@ -98,8 +97,14 @@ public class JDBCRepository implements ProductRepository {
     public List<Product> getProductsByConditions(String title, int price, String location) {
         log.info("Fetching products with title {}, price {}, location {} from database",title,price,location);
 
-        StringBuilder sql = new StringBuilder("SELECT * FROM PRODUCTS WHERE 1 = 1");
+        StringBuilder sql = new StringBuilder("SELECT * FROM PRODUCTS");
         List<Object> params = new ArrayList<>();
+
+        if((title == null || title.isEmpty() && price == 0 && (location != null && location.isEmpty()))) {
+            sql.append(" WHERE 1 = 0");
+        } else {
+            sql.append(" WHERE 1 = 1");
+        }
 
         if(title != null && !title.isEmpty()) {
             sql.append(" AND title like ?");
